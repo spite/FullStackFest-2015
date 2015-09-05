@@ -1,0 +1,787 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>WebVR - FullStackFest 2015</title>
+		<style>
+			@import url(Sanchez);
+
+			html, body {
+				height: 100%;
+			}
+
+			body {
+				width: 100%;
+
+				margin: 0;
+				padding: 0;
+
+				color: #ddd;
+
+				font-size: 30px;
+				font-family: "Sanchez";
+
+				background-color: #000;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			td:hover{ color: white;}
+			a {
+				color: #48f;
+			}
+
+			h1 {
+				color: #fff;
+				margin: 20px;
+			}
+
+			h2 {
+				color: #fff;
+				font-size: 30px;
+				margin: 24px;
+			}
+
+			img {
+				max-width: 100%;
+			}
+
+			pre {
+				padding: -20px -40px !important;
+				font-size: 18px;
+				border-bottom: 1px solid #444;
+				background-color: #222;
+				text-align: left;
+			}
+
+			p b{ color: white ;}
+			iframe {
+				position: absolute;
+				top: 50%;
+				left: 0px;
+				width: 100%;
+				height: 788px; /* 100%; */
+				border: 0;
+				transform: translate( 0, -50% );
+			}
+
+			section {
+				max-height: 788px;
+				text-align: center;
+				width: 100%;
+				height: 788px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			section div.background{
+				width: 100%;
+				height: 100%;
+				background-repeat: no-repeat;
+				background-position: 50%;
+				background-size: cover;
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				opacity: .5;
+			}
+
+			section div.bright{
+				opacity: 1;
+			}
+
+			section > div {
+				z-index: 100;
+			}
+
+
+			table {
+				margin: auto;
+				position: relative;
+			}
+
+			td {
+				padding: 0px 10px;
+				font-size: 24px;
+				text-align: center;
+				vertical-align: top;
+			}
+
+			#controls {
+				position: absolute;
+				padding: 5px;
+				left: calc(50% - 100px);
+				bottom: 4px;
+				width: 200px;
+				font-size: 16px;
+				opacity: 0.2;
+				text-align: center;
+				transition: opacity 0.5s;
+				z-index: 1;
+			}
+
+			#controls:hover {
+				opacity: 1;
+			}
+
+			#controls span {
+				margin: 2px;
+				padding: 2px 10px;
+				color: #fff;
+				background-color: #000;
+			}
+			code{ font-size: 80%;}
+			.bytes *{ text-align: left}
+		</style>
+		<link rel="stylesheet" href="prism.css" data-noprefix />
+	</head>
+	<body>
+
+		<section>
+			<div>
+				<img width=400 src="files/logo-horizontal-d15c655765fd25bb2d67bd4b469d446b.svg"/>
+				<br/><br/><br/><br/>
+				<h1>The Road To WebVR</h1>
+				<h2>Replacing reality with JavaScript</h2>
+				<br/><br/>
+				<p>Jaume Sanchez | <a href="https://twitter.com/thespite">@thespite</a></p>
+			</div>
+		</section>
+	
+		<section>
+			<div class="background bright" style="background-image: url(files/breel.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/c2r.png)" ></div>
+		</section>
+
+		<section>
+			<div>
+				<h1>A brief history of Virtual Reality</h1>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>Virtual reality is an umbrella term, really</p>
+				<p>But it's esentially a familiar concept to most people</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>1980 AD</h1>
+				<p>3:47 in the afternoon</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<img src="files/bulky.jpg" />
+			</div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/virtual_reality_90s.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/virtual_reality_90s.jpg)" ></div>
+			<div>
+				<h1>VR in the past</h1>
+				<p>Bulky headsets</p>
+				<p>Laggy rigs</p>
+				<p>Lo-fi graphics</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/image.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/3paRJ.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/3paRJ.jpg)" ></div>
+			<div>
+				<p>Dizziness</p>
+				<p>Expensive experience</p>
+				<p>Fragmented content</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/movies.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/photo-original.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/Oculus_Rift_-_Developer_Version_-_Front.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/hmds.jpg)" ></div>
+		</section>
+
+		<section>
+			<div>
+				<h1>VR now</h1>
+			</div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/oculus-guy.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/vr.gif)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/oculus-guy.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/Samsung-Gear-VR.png)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/gear-vr-opened.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/gear-vr-opened.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/samsung-gear-vr-product-photos-18.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/fold.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background bright" style="background-image: url(files/google_2015-may-28.jpg)" ></div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/hero_henry.jpg)" ></div>
+			<div>
+				<h1>Developing for VR</h1>
+				<p>Unity and Unreal Engine 4</p>
+				<p>360 video<br/>
+				Immersive experiences<br/>
+				Gaming</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Ok! So what IS WebVR?</h1>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>Is WebVR just an idea?</p>
+				<p>Is it a collection of patterns describing<br/>how to bring VR content to the web?</p>
+				<p>Is it a browser in VR with pages<br/>flying around cyberspace?</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Web VR is VR in the web</h1>
+				<p>A page using a stereo renderer and updating<br/>the view with a DeviceOrientation event</p>
+
+				<h1>WebVR is an API</h1>
+				<p>Enables the web to be a platform for VR<br/>using JavaScript and a browser.</p>
+				<p>Provides purpose-built interfaces to VR hardware to allow<br/>developers to build compelling, comfortable VR experiences.</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>WebVR is different from VR:<br/><br/>no need to install content<br/><br/>can unify content from competing platforms<br/>on many devices, universally<br/><br/>URLs enable connectivity</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h2>Some examples</h2>
+				<div style="text-align: left">
+				<p><a href="http://media.tojicode.com/q3bsp/">Quake III viewer</a> - Brandon Jones<br/>
+				<a href="http://vizor.io/fthr/vr_cube/edit" >Vizor.io</a><br/>
+				<a href="http://mozvr.com/projects/sechelt/">Sechelt</a> - Josh Carpenter / Mr.doob<br/>
+				<a href="https://www.primroseeditor.com/#home">Primrose</a> - Sean T. McBeth<br/>
+				<a href="https://www.shadertoy.com/results?filter=VR" >Shadertoy</a><br/>
+				<a href="http://inspirit.unboring.net/" >Inspirit</a> - Unboring<br/>
+				<a href="http://threejs.org/examples/vr_video.html" >VR Video</a> - Pedrofe + mery project</p>
+				</div>
+				<p><a href="http://mozvr.com/">MozVR project</a><br/>
+				<a href="http://webvr.info/">WebVR.info</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>MDN: <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVR_API" >WebVR API on MDN</a><br/>
+SPEC: <a href="http://mozvr.github.io/webvr-spec/webvr.html">WebVR Spec on GH</a></p>
+<p>Vladimir Vukicevic from Mozilla (<a href="https://twitter.com/vvuk">@vvuk</a>)<br/>
+Brandon Jones from Google (<a href="https://twitter.com/tojiro">tojiro</a>)</p>
+				<p>Browser builds with WebVR:<br/><a href="http://blog.bitops.com/" >Firefox Nightly</a><br/><a href="https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ
+">Chromium</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>WebVR is a very simple API</h1>
+				<p>A WebVR app has to handle<br/>I/O to dedicated hardware</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<pre><code class="language-javascript" >navigator.getVRDevices().then( function( devices ) { /* ... */ } )</code></pre>
+				<p>We get an array of devices:</p>
+				<pre><code class="language-javascript">HMDVRDevice {}
+	deviceId: "1"
+	deviceName: "Oculus Rift DK2, Oculus VR"
+	hardwareUnitId: "1"</code></pre>
+				<pre><code class="language-javascript">PositionSensorVRDevice {}
+	deviceId: "2"
+	deviceName: "Oculus Rift DK2, Oculus VR"
+	hardwareUnitId: "1"</code></pre>
+				<p>There'll be a "Mockulus Rift" if there's no HMD attached</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>HMDVRDevice <a href="https://developer.mozilla.org/en-US/docs/Web/API/HMDVRDevice" >MDN</a></p>
+				<pre><code class="language-javascript">HMDVRDevice.getEyeParameters( 'left' | 'right' )</code></pre>
+				<p>Returns current parameters for the eye specified, as VREyeParameters</p>
+				<pre><code class="language-javascript">VRFieldOfView currentFieldOfView
+VRFieldOfView minimumFieldOfView
+VRFieldOfView maximumFieldOfView
+VRFieldOfView recommendedFieldOfView
+DOMPoint eyeTranslation
+DOMRect renderRect
+</code></pre>	
+				<br/>
+				<pre><code class="language-javascript">HMDVRDevice.setFieldOfView( leftFOV, rightFOV, zNear, zFar )</code></pre>
+				<p>Sets the field of view for both eyes</p>			
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>PositionSensorVRDevice <a href="https://developer.mozilla.org/en-US/docs/Web/API/PositionSensorVRDevice" >MDN</a></p>
+				<p>Returns the current state of the position sensor, as VRPositionState</p>
+				<pre><code class="language-javascript">DOMPoint angularAcceleration
+DOMPoint angularVelocity
+DOMPoint linearAcceleration
+DOMPoint linearVelocity
+DOMPoint orientation
+DOMPoint position (will be a DOMQuarternion)
+timestamp</code></pre>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>You don't have to worry about most of this</p>
+				<p>Three.js has your back!</p>
+				<p><a href="https://github.com/mrdoob/three.js" >Github repo</a></p>
+				<p><a href="https://github.com/mrdoob/three.js/blob/dev/examples/js/effects/VREffect.js" >VREffect</a><br/>
+				<a href="https://github.com/mrdoob/three.js/blob/dev/examples/js/controls/VRControls.js" >VRControls</a></p>
+				<br/>
+				<p><a href="http://threejs.org" >threejs.org</a> | <a href="http://twitter.com/mrdoob" >@mrdoob</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>Code three.js</p>
+				<pre><code class="language-javascript">var renderer = new THREE.WebGLRenderer( { antialias: true } );
+
+document.body.appendChild( renderer.domElement );
+
+var scene = new THREE.Scene();
+var width = window.innerWidth, height = window.innerHeight;
+var camera = new THREE.PerspectiveCamera( 75, width, height, 1, 10000 );
+
+var controls = new THREE.OrbitControls( camera );
+
+createWorld();
+
+function render() {
+	
+	controls.update();
+	renderer.render( scene, camera );
+
+	requestAnimationFrame( render );
+
+}
+
+render();</code></pre>
+<p><a href="../demos/no-webvr/index.html">Demo</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>Code WebVR with three.js</p>
+				<pre><code class="language-javascript">var renderer = new THREE.WebGLRenderer( { antialias: true } );
+
+document.body.appendChild( renderer.domElement );
+
+var scene = new THREE.Scene();
+var width = window.innerWidth, height = window.innerHeight;
+var camera = new THREE.PerspectiveCamera( 75, width, height, 1, 10000 );
+
+var controls = new THREE.VRControls( camera );
+
+var effect = new THREE.VREffect( renderer );
+effect.setSize( width, height );
+
+createWorld();
+
+function render() {
+	
+	controls.update();
+	effect.render( scene, camera );
+
+	requestAnimationFrame( render );
+
+}
+
+render();
+
+document.body.addEventListener( 'dblclick', function() {
+	effect.setFullScreen( true );
+});</code></pre>
+<p><a href="../demos/basic/index.html">Demo</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/dredd.jpg)" ></div>
+			<div>
+				<h1>Things to remember</h1>
+				<p>In 3D, units are just a convention<br/>In VR, they are THE LAW</p>
+				<p>Units are physically meaningful:<br/>1 unit = 1 meter</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/dumb-and-dumber.gif)" ></div>
+			<div>
+				<h1>Things to remember</h1>
+				<p>Don't ever move the camera unless initiated by the user!</p>
+				<p>(Another reason why low latency is very important)</p>
+				<p>We want people to enjoy VR,<br/>not having their breakfast revisited!</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/gran-torino.gif)" ></div>
+		</section>
+
+		<section>
+			<div>
+				<h2>What about cardboard?</h2>
+				<p><a href="https://vr.chromeexperiments.com/" >Chrome Experiments for Virtual Reality</a></p>
+				<pre><code class="language-javascript">var renderer = new THREE.WebGLRenderer( { antialias: true } );
+
+document.body.appendChild( renderer.domElement );
+
+var scene = new THREE.Scene();
+var width = window.innerWidth, height = window.innerHeight;
+var camera = new THREE.PerspectiveCamera( 75, width, height, 1, 10000 );
+
+var controls = new THREE.DeviceOrientationControls( camera );
+var effect = new THREE.StereoEffect( renderer );
+effect.eyeSeparation = 10;
+effect.setSize( width, height );
+
+createWorld();
+
+function render() {
+	
+	controls.update();
+	effect.render( scene, camera );
+
+	requestAnimationFrame( render );
+
+}
+
+render();</code></pre>
+<p><a href="../demos/cardboard-basic/index.html">Demo</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Now that we're talking about Cardboard</h1>
+				<p>More accessible, more available.<br/>
+				Works with Nexus, iPhone, etc.</p>
+				<p>Limitations of the web and the browsers:<br/>wake, touch, performance, lens distortion, sensors.</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Responsive WebVR</h1>
+				<p><a href="http://smus.com/responsive-vr">Responsive WebVR, headset optional</a> - Boris Mus <a href="https://twitter.com/borismus">@borismus</a></p>
+				<p>Write once, run in any VR headset</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p><h1>Enter WebVR boilerplate</h1></p>
+				<p><a href="https://github.com/borismus/webvr-boilerplate" >GitHub page</a></p>
+				<p>"new starting point for building responsive web VR experiences<br/>that work on popular VR headsets<br/>and degrace gracefully on other platforms"</p>
+				<p>Works with three.js VRControl and VREffect.</p>
+				<h2>webvr-polyfill</h2>
+				<p>CardboardHMDDevice<br/>GyroPositionSensorVRDevice<br/>MouseKeyboardPositionSensorVRDevice</p>
+				<h2>WebVR manager</h2>
+				<p>Common UI elements, VR best practices and transitions to fullscreen.</p>
+				<p><a href="http://borismus.github.io/webvr-boilerplate/" >Cube demo</a> | <a href="http://borismus.github.io/sechelt" >Sechelt</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Input devices</h1>
+				<p>Most of the devices for VR will be processed as PositionSensorVRDevice.</p>
+				<p>But there's many other options:</p>
+				<p>Keyboard and mouse<br/>
+				Leap Motion, Myo<br/>
+				<a href="../demos/basic-gamepad/" >gamepad controllers</a><br/>
+				scrolling (PowerMater) <a href="../demos/scrolling/index-physics.html">Physics I</a> and <a href="../demos/scrolling/index-labyrinth.html">Physics II</a></p>
+				<p>New patterns for click, select, link, etc.</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/google_2015-may-28.jpg)" ></div>
+			<div>
+				<h1>What about cardboard?</h1>
+				<p>Improve the "shake" detection in Gen1<br/>
+				Work around the limitations of Gen2</p>
+				<p>Computer vision<br/>
+				Voice recognition<br/>
+				WebRTC controls</p>
+				<p>(Most of this only applies to Android)<br/>*sad trombone*</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h2>On the topic of transforming the camera</h2>
+				<pre><code class="language-javascript">var width = window.innerWidth, height = window.innerHeight;
+var camera = new THREE.PerspectiveCamera( 75, width, height, 1, 10000 );
+var controls = new THREE.VRControls( camera );
+
+var effect = new THREE.VREffect( renderer );
+effect.setSize( width, height );</code></pre>
+				<p>To move the camera (the user) away from the origin:</p>
+				<pre><code class="language-javascript">var cameraDummy = new THREE.Object3D();
+cameraDummy.add( camera );
+scene.add( cameraDummy );
+
+/* Move it around */
+cameraDummy.position.set( 100, 0, 100 );
+
+/* or use controls */
+var dummyControls = new THREE.GamepadController( cameraDummy );</code></pre>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>3D Sound</h1>
+				<p>We have Web Audio API!</p>
+				<p><a href="http://smus.com/spatial-audio-web-vr/" >Spatial audio and web VR</a> - Boris Smus<br/>
+				<a href="http://www.html5rocks.com/en/tutorials/webaudio/positional_audio" >Mixing Positional Audio and WebGL</a> - Ilmari Heikkinen</p>
+			</div>
+		</section>
+
+		<section>
+			<div class="background" style="background-image: url(files/google_2015-may-28.jpg)" ></div>
+			<div>
+				<h1>What about cardboard?</h1>
+				<p>Yes!</p>
+				<p>Even iOS!</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Future and challenges</h1>
+				<p>Performance: 90Hz under 20ms latency is HARD</p>
+				<p>Do we need a declarative WebVR, with HTML/CSS?</p>
+				<p>We need tools and libraries for developers</p>
+				<p>We need to figure out best practices,<br/>create bidirectional patterns of communication</p>
+				<p>Security concerns on an immersive VR-enabled web</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>Hardware is in flux, API is in flux, implementations are in flux</p>
+				<p>There are NO consumer headsets out there yet!</p>
+				<p>The hardware hasn't found a userbase yet</p>
+				<h1>And yet there's a ton of content</h1>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<p>It's truly a new world to invent</p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Go and create!</h1>
+				<p>It might induce nausea.</p>
+				<p>It might make you hallucinate.</p>
+				<p><a href="../demos/fireflies/index.html">But it makes you feel all warm and fuzzy inside</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+				<h1>Jaume Sanchez</h1>
+				<p>Technical Director / Creative Technologist @ B-REEL</p>
+				<p><a href="http://www.clicktorelease.com" >clicktorelease.com</a></p>
+			</div>
+		</section>
+
+		<section>
+			<div>
+			<h1>Thanks!</h1>
+			<p>Questions?<br/>Hit me up on twitter!<br/><a href="http://twitter.com/thespite">@thespite</a></p>
+			</div>
+		</section>
+
+		<script src="prism.js" data-></script>
+		<script src="prism-glsl.js" data-></script>
+		<script>
+
+		var slides = [], current;
+		var sections = document.getElementsByTagName( 'section' );
+
+		while ( sections.length ) {
+
+			slides.push( sections[ 0 ] );
+			document.body.removeChild( sections[ 0 ] );
+
+		}
+
+		var setSlide = function ( id ) {
+
+			if ( current !== undefined ) {
+
+				document.body.removeChild( slides[ current ] );
+
+			}
+
+			window.location.hash = id;
+			position.innerHTML = ( id + 1 ) + ' / ' + slides.length;
+
+			document.body.appendChild( slides[ id ] );
+
+			var v = slides[ id ].querySelector( 'video' );
+			if( v && v.autoplay ) {
+				v.pause();
+				v.currentTime = 0;
+				v.play();
+			}
+
+			Prism.highlightAll();
+
+			current = id;
+
+		}
+
+		var prevSlide = function () {
+
+			setSlide( Math.max( 0, current - 1 ) );
+
+		}
+
+		var nextSlide = function () {
+
+			setSlide( Math.min( slides.length - 1, current + 1 ) );
+
+		}
+
+		// controls
+
+		var controls = document.createElement( 'div' );
+		controls.id = 'controls';
+		document.body.appendChild( controls );
+
+		var arrowPrev = document.createElement( 'span' );
+		arrowPrev.innerHTML = '⟵';
+		arrowPrev.style.cursor = 'pointer';
+		arrowPrev.addEventListener( 'click', function ( event ) {
+
+			prevSlide();
+
+		}, false );
+		controls.appendChild( arrowPrev );
+
+		var position = document.createElement( 'span' );
+		position.style.cursor = 'default';
+		controls.appendChild( position );
+
+		var arrowNext = document.createElement( 'span' );
+		arrowNext.innerHTML = '⟶';
+		arrowNext.style.cursor = 'pointer';
+		arrowNext.addEventListener( 'click', function ( event ) {
+
+			nextSlide();
+
+		}, false );
+		controls.appendChild( arrowNext );
+
+		window.addEventListener( 'keyup', function ( event ) {
+
+			switch ( event.keyCode ) {
+
+				case 37:
+					prevSlide();
+					break;
+
+				case 39:
+					nextSlide();
+					break;
+
+			}
+
+		}, false );
+
+		//
+
+		setSlide( window.location.hash.length ? parseInt( window.location.hash.substr( 1 ) ) : 0 );
+
+		</script>
+	</body>
+</html>

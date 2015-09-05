@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>Basic Three.js VR boilerplate</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+
+	</body>
+
+	<script src="js/three.js"></script>
+	<script src="js/OrbitControls.js"></script>
+
+	<script>
+
+		var renderer = new THREE.WebGLRenderer( { antialias: true } );
+		renderer.setPixelRatio( 1 );
+		renderer.devicePixelRatio = 1;
+
+		document.body.appendChild( renderer.domElement );
+
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		camera.position.z = 10;
+		var controls = new THREE.OrbitControls( camera, renderer.domElement );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	
+		createWorld();
+
+		function render() {
+			
+			renderer.render( scene, camera );
+
+			requestAnimationFrame( render );
+
+		}
+		
+		render();
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+		}
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+function createWorld() {
+
+	var scale = 1;
+	var geometry = new THREE.BoxGeometry( .5 * scale, .5 * scale, .5 * scale );
+
+	var material = new THREE.MeshNormalMaterial();
+	var sceneGeometry = new THREE.Geometry();
+	var matrix = new THREE.Matrix4();
+	var t = new THREE.Vector3();
+	var q = new THREE.Quaternion();
+	var s = new THREE.Vector3( 1,1,1 );
+	var axis = new THREE.Vector3( 0 );
+	var angle;
+	for( var j =0 ; j < 10000; j++ ) {
+	
+		t.set( ( .5 - Math.random() ) * 30 * scale, ( .5 - Math.random() ) * 30 * scale, ( .5 - Math.random() ) * 30 * scale );
+		axis.set( ( .5 - Math.random() ), ( .5 - Math.random() ), ( .5 - Math.random() ) );
+		angle = 2 * Math.random() * Math.PI;
+		q.setFromAxisAngle( axis, angle );
+		matrix.compose( t, q, s );
+		sceneGeometry.merge( geometry, matrix, 0 );
+
+	}
+
+	cube = new THREE.Mesh( sceneGeometry, material );
+
+	scene.add( cube );
+
+}
+
+	</script>
+}
+</html>

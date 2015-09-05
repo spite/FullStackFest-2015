@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Physics</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			*{ box-sizing: border-box; margin: 0; padding: 0 }
+			body {
+				color: #ffffff;
+				font-family: tahoma;
+				font-size:13px;
+				background-color: #222;
+				margin: 0px;
+				overflow: hidden;
+			}
+			a{ color: white; text-shadow: 0 1px 0 rgba( 0,0,0,.5 ) }
+			#container canvas{ position: absolute; left: 0; top: 0; width: 100%; height: 100%; bottom: 0;}
+		</style>
+		<script src="js/three.min.js" ></script>
+		<script src="js/OrbitControls.js" ></script>
+		<script src="js/matter-0.8.0.min.js" ></script>
+		
+		<script src="js/VRControls.js"></script>
+		<script src="js/VREffect.js"></script>
+
+	</head>
+	<body>
+
+<script>
+
+var Engine = Matter.Engine,
+	World = Matter.World,
+	Bodies = Matter.Bodies;
+var engine;
+
+var renderer, dummyCamera;
+
+function init() {
+
+	renderer = new THREE.WebGLRenderer( { antialias: true });
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setPixelRatio( window.devicePixelRatio )
+	renderer.devicePixelRatio = window.devicePixelRatio;
+	document.body.appendChild( renderer.domElement );
+	renderer.autoClear = false;
+	renderer.setClearColor( 0x000000 );
+	window.renderer = renderer;
+
+	var scene = new THREE.Scene();
+	var scale = .1;
+
+	dummyCamera = new THREE.Object3D();
+	dummyCamera.position.z = scale  *100;
+	var	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, scale * 1, scale * 10000 );
+	camera.position.z = scale * 10;
+	dummyCamera.add( camera );
+	scene.add( dummyCamera );
+
+	engine = Engine.create(document.body);
+
+	var boxes = [];
+	for( var j = 0; j < 20; j++ ) {
+		var x = scale * 200, y = scale * 200 + Math.random() * scale * 400;
+		var s = scale * 40 + Math.random() * scale * 40;
+		boxes.push( Bodies.rectangle( x, y, s, s ) );
+	}
+
+	var ground = Bodies.rectangle(scale * 400, scale * 610, scale * 810, scale * 60, { isStatic: true });
+	var wallA = Bodies.rectangle(scale * 0, scale * 305, scale * 60, scale * 670, { isStatic: true });
+	var wallB = Bodies.rectangle(scale * 800, scale * 305, scale * 60, scale * 670, { isStatic: true });
+	var ceiling = Bodies.rectangle(scale * 400, scale * 0,scale *  810, scale * 60, { isStatic: true });
+
+	World.add( engine.world, boxes );
+	World.add( engine.world, [ ground, wallA, wallB, ceiling ] );
+
+	var bodies = [];
+	var material = new THREE.MeshNormalMaterial();
+	var material = new THREE.MeshPhongMaterial( { color: 0xfffdf0, specular: 0xffffff });
+	var boxMaterial = new THREE.MeshPhongMaterial( { color: 0xffc659, specular: 0xffffff, shading: THREE.FlatShading });
+	
+	var a = 0, angle = 0;
+
+	var dummy = new THREE.Object3D();
+	scene.add( dummy );
+	dummy.position.z =scale *  -500;
+
+	for( var j = 0; j < engine.world.bodies.length; j++ ) {
+
+		var b = engine.world.bodies[ j ];
+		
+		if( b.isStatic ) {
+			m = new THREE.Mesh( 
+				new THREE.BoxGeometry( b.bounds.max.x - b.bounds.min.x, b.bounds.max.y - b.bounds.min.y, scale * 160 ), 
+				material
+			);
+		} else {
+			var w = b.bounds.max.x - b.bounds.min.x;
+			var h = b.bounds.max.y - b.bounds.min.y;
+			m = new THREE.Mesh(
+				new THREE.BoxGeometry( w, h, scale * ( 80 + j ) ), 
+				boxMaterial
+			);
+		}
+
+		dummy.add( m );
+		m.castShadow = true;
+		m.receiveShadow = true;
+		bodies.push( m );
+
+	}
+
+	var m = new THREE.Mesh( new THREE.BoxGeometry( scale * 800, scale * 600, scale * 10 ), material );
+	m.position.z = scale * -45;
+	dummy.add( m );
+
+	Engine.run(engine);
+
+	hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+	hemiLight.color.setHSL( 0.6, 1, 0.6 );
+	hemiLight.color.setHex( 0xfebc7c );
+	hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+	hemiLight.position.set( 0, 500, 0 );
+	scene.add( hemiLight );
+
+	dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	dirLight.color.setHSL( 0.1, 1, 0.95 );
+	dirLight.position.set( -300, 500, 400 );
+	scene.add( dirLight );
+
+	var d = new THREE.DirectionalLightHelper( dirLight );
+	//scene.add( d );
+
+	dirLight.castShadow = true;
+
+	dirLight.shadowMapWidth = 2048;
+	dirLight.shadowMapHeight = 2048;
+
+	var d = scale * 800;
+
+	dirLight.shadowCameraLeft = -d;
+	dirLight.shadowCameraRight = d;
+	dirLight.shadowCameraTop = d;
+	dirLight.shadowCameraBottom = -d;
+
+	dirLight.shadowCameraFar = 3500;
+	dirLight.shadowBias = -0.0001;
+	dirLight.shadowDarkness = 0.35;
+	dirLight.shadowCameraVisible = false;
+
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.cullFace = THREE.CullFaceBack;
+
+	function render() {
+		
+		requestAnimationFrame( render );
+
+		angle += ( a - angle ) * .1;
+
+		var g = scale * 9.8;
+		engine.world.gravity.x = g * Math.cos( angle );
+		engine.world.gravity.y = g * Math.sin( angle );
+		
+		for( var j = 0; j < engine.world.bodies.length; j++ ) {
+			var b = engine.world.bodies[ j ].position;
+			bodies[ j ].position.set( b.x - scale * 405, - ( b.y - scale * 305 ), scale * 0 )
+			bodies[ j ].rotation.z = -engine.world.bodies[ j ].angle;
+		}
+
+		dummy.rotation.z = angle - Math.PI / 2;
+		
+		controls.update();
+		renderer.shadowMap.render( scene, camera );
+		effect.render( scene, camera );
+
+	}
+
+	var vrEffect = new THREE.VREffect( renderer );
+	var vrControls = new THREE.VRControls( camera );
+	
+	var monoControls = new THREE.OrbitControls( camera );
+	var controls, effect;
+
+	function changeMode(mode) {
+		console.log('changing mode: ' + mode);
+		switch(mode) {
+			case 'mono':
+				effect = renderer;
+				controls = monoControls;
+				break;
+			case 'vr':
+				controls = vrControls;
+				effect = vrEffect;
+				break;
+			case 'stereo':
+				controls = cbControls;
+				effect = cbEffect;
+				break;
+		}
+		effect.setSize( window.innerWidth, window.innerHeight );
+	};
+
+	changeMode( 'mono' );
+
+	function enterVr() {
+		if(!window.frameElement) {
+			changeMode( 'vr' );
+			effect.setFullScreen( true );
+		}
+	}
+
+	document.body.addEventListener( 'dblclick', enterVr);
+
+	onWindowResize();
+	render();
+
+	window.addEventListener( 'resize', onWindowResize );
+
+	function onWindowResize() {
+
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		effect.setSize( window.innerWidth, window.innerHeight );
+		
+	}
+
+	document.body.addEventListener( 'DOMMouseScroll', onScroll );
+	document.body.addEventListener( 'mousewheel', onScroll );
+
+	function onScroll( e ) {
+
+		if( e.deltaX !== undefined ) a += .001 * ( e.deltaX + e.deltaY );
+		else a += .1 * e.detail;
+
+		e.preventDefault();
+
+	};
+
+}
+
+window.addEventListener( 'load', init );
+
+</script>
+
+	</body>
+</html>
