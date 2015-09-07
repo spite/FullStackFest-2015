@@ -12,8 +12,7 @@ THREE.GamepadControls = function ( object ) {
 	this.lon = -90;
 	this.lat = 0;
 	this.target = new THREE.Vector3();
-	this.axesOffsets = null;
-	this.buttonsOffsets = null;
+	this.threshold = .05;
 
 	this.init = function(){
 
@@ -63,32 +62,25 @@ THREE.GamepadControls = function ( object ) {
 
 	}
 
+	this.filter = function( v ) {
+
+		return ( Math.abs( v ) > this.threshold ) ? v : 0;
+
+	}
+
 	this.pollGamepads = function() {
 
 		var rawGamepads =
 		(navigator.getGamepads && navigator.getGamepads()) ||
 		(navigator.webkitGetGamepads && navigator.webkitGetGamepads());
 
+
 		if( rawGamepads && rawGamepads[ 0 ] ) {
 
 			var g = rawGamepads[ 0 ];
-
-			if( this.axesOffsets === null ) {
-				this.axesOffsets = [];
-				for( var j = 0; j < g.axes.length; j++ ) {
-					this.axesOffsets[ j ] = g.axes[ j ];
-				}
-			}
-
-			if( this.buttonsOffsets === null ) {
-				this.buttonsOffsets = [];
-				for( var j = 0; j < g.buttons.length; j++ ) {
-					this.buttonsOffsets[ j ] = g.buttons[ j ].value;
-				}
-			}
 			
-			this.lon += g.axes[ 0 ] - this.axesOffsets[ 0 ];
-			this.lat -= g.axes[ 1 ] - this.axesOffsets[ 1 ];
+			this.lon += this.filter( g.axes[ 0 ] );
+			this.lat += this.filter( g.axes[ 1 ] );
 			this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
 			var phi = ( 90 - this.lat ) * Math.PI / 180;
 			var theta = this.lon * Math.PI / 180;
@@ -102,10 +94,11 @@ THREE.GamepadControls = function ( object ) {
 
 			this.rotMatrix.extractRotation( this.object.matrix );
 			this.dir.set( 
-				g.axes[ 2 ] - this.axesOffsets[ 2 ], 
-				( g.buttons[ 6 ].value - this.buttonsOffsets[ 6 ] ) - g.buttons[ 7 ].value - this.buttonsOffsets[ 7 ], 
-				g.axes[ 3 ] - this.axesOffsets[ 3 ]
+				this.filter( g.axes[ 2 ] ), 
+				this.filter( g.buttons[ 6 ].value ) - this.filter( g.buttons[ 7 ].value ), 
+				this.filter( g.axes[ 3 ] ) 
 			);
+			this.dir.multiplyScalar( .1 );
 			this.dir.applyMatrix4( this.rotMatrix );
 			this.object.position.add( this.dir );
 			
