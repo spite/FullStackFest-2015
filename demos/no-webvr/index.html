@@ -12,11 +12,52 @@
 				margin: 0px;
 				padding: 0;
 				overflow: hidden;
+				font-family: roboto, sans-serif;
+				text-shadow: 0 0 1px black;
+			}
+			canvas{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+			}
+			#intro{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 10;
+				background-color: rgba( 0,0,0,.6 );
+				display: -webkit-flex;
+				-webkit-align-items: center;
+				-webkit-justify-content: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				line-height: 1em;
+				transition: opacity 150ms ease-out;
+			}
+			.hidden{
+				pointer-events: none;
+				opacity: 0;
 			}
 		</style>
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 	</head>
 
 	<body>
+
+		<div id="intro" >
+			<div>
+				<p>Welcome!</p>
+				<h1>Scene without WebVR</h1>
+				<p>Tap and drag or click and drag to interact</p>
+				<p>Click or tap to start</p>
+			</div>
+		</div>
 
 	</body>
 
@@ -26,8 +67,8 @@
 	<script>
 
 		var renderer = new THREE.WebGLRenderer( { antialias: true } );
-		renderer.setPixelRatio( 1 );
-		renderer.devicePixelRatio = 1;
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.devicePixelRatio = window.devicePixelRatio;
 
 		document.body.appendChild( renderer.domElement );
 
@@ -59,6 +100,13 @@
 		}
 
 		window.addEventListener( 'resize', onWindowResize, false );
+
+		var intro = document.getElementById( 'intro' );
+		intro.addEventListener( 'click', function() {
+
+			this.classList.add( 'hidden' );
+
+		});
 
 function createWorld() {
 
