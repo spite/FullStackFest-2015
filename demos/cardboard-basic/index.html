@@ -2,7 +2,7 @@
 
 <html lang="en">
 	<head>
-		<title>Basic Three.js VR boilerplate</title>
+		<title>Basic Three.js VR boilerplate | Cardboard</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
@@ -12,11 +12,51 @@
 				margin: 0px;
 				padding: 0;
 				overflow: hidden;
+				font-family: roboto, sans-serif;
+				text-shadow: 0 0 1px black;
+			}
+			canvas{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+			}
+			#intro{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 10;
+				background-color: rgba( 0,0,0,.6 );
+				display: -webkit-flex;
+				-webkit-align-items: center;
+				-webkit-justify-content: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				line-height: 1em;
+				transition: opacity 150ms ease-out;
+			}
+			.hidden{
+				pointer-events: none;
+				opacity: 0;
 			}
 		</style>
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 	</head>
 
 	<body>
+
+		<div id="intro" >
+			<div>
+			<p>Welcome!</p>
+			<h1>Web VR | Cardboard</h1>
+			<p>Tap screen to go fullscreen</p>
+			</div>
+		</div>
 
 	</body>
 
@@ -27,13 +67,13 @@
 	<script>
 
 		var renderer = new THREE.WebGLRenderer( { antialias: true } );
-		renderer.setPixelRatio( 1 );
-		renderer.devicePixelRatio = 1;
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.devicePixelRatio = window.devicePixelRatio;
 
 		document.body.appendChild( renderer.domElement );
 
 		var scene = new THREE.Scene();
-		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, .1, 100 );
 		var controls = new THREE.DeviceOrientationControls( camera );
 		var effect = new THREE.StereoEffect( renderer );
 		effect.eyeSeparation = .1;
@@ -53,7 +93,8 @@
 		
 		render();
 
-		window.addEventListener( 'click', function() {
+		var intro = document.getElementById( 'intro' );
+		intro.addEventListener( 'click', function() {
 			
 			if ( renderer.domElement.mozRequestFullScreen ) {
 
@@ -64,6 +105,8 @@
 				renderer.domElement.webkitRequestFullscreen();
 
 			}
+
+			this.classList.add( 'hidden' );
 
 		});
 
