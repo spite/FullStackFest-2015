@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>WebVR Fireflies</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				padding: 0;
+				overflow: hidden;
+				font-family: roboto, sans-serif;
+				text-shadow: 0 0 1px black;
+			}
+			canvas{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+			}
+			#intro{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 10;
+				background-color: rgba( 0,0,0,.6 );
+				display: -webkit-flex;
+				-webkit-align-items: center;
+				-webkit-justify-content: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				line-height: 1em;
+				transition: opacity 150ms ease-out;
+			}
+			.hidden{
+				pointer-events: none;
+				opacity: 0;
+			}
+		</style>
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	</head>
+
+	<body>
+
+		<div id="intro" >
+			<div>
+				<p>Welcome!</p>
+				<h1>Web VR | Cardboard</h1>
+				<p>Tap screen to go fullscreen</p>
+			</div>
+		</div>
+
+	</body>
+
+	<script src="js/three.js"></script>
+	<script src="js/VRControls.js"></script>
+	<script src="js/VREffect.js"></script>
+	<script src="js/DeviceOrientationControls.js"></script>
+	<script src="js/StereoEffect.js"></script>
+
+	<script type="x-shader/x-vertex" id="vertexShader" charset="utf-8">
+
+	precision mediump float;
+	precision mediump int;
+
+	uniform mat4 modelViewMatrix; // optional
+	uniform mat4 projectionMatrix; // optional
+	uniform mat3 normalMatrix; // optional
+	uniform vec3 cameraPosition;
+
+	attribute vec3 position;
+
+	#define MAX 64
+
+	uniform vec3 path[ MAX ];
+	uniform float offset;
+	uniform float speed;
+	uniform float dir;
+
+	varying float opacity;
+
+	mat4 lookAtMatrix(vec3 eye, vec3 target, vec3 up ) {
+
+		vec3 z = normalize( eye - target );
+	    if( length( z ) == 0. ) {
+	    	z.z = 1.;
+	    }
+
+	    vec3 x = normalize( cross( up, z ) );
+	    if( length( x ) == 0. ) {
+	    	z.x += .0001;
+	    	x = normalize( cross( up, z ) );
+	    }
+
+	    vec3 y = cross( z, x );
+
+	    return mat4( x.x, x.y, x.z, 0.,
+	                 y.x, y.y, y.z, 0.,
+	                 z.x, z.y, z.z, 0.,
+	                 0.,  0.,  0.,  1. );
+
+	    /*return mat4( x.x, y.x, z.x, 0.,
+	                 x.y, y.y, z.y, 0.,
+	                 x.z, y.z, z.z, 0.,
+	                 0.,  0.,  0.,  1. );*/
+
+	}
+
+
+	void main() {
+		
+		float o = offset * float( MAX );
+		float f = floor( o );
+		int pos = int( f );
+		int next = pos + 1;
+		vec3 p = mix( path[ pos ], path[ pos + 1 ], o - f );
+		vec3 p2 = mix( path[ pos + 1 ], path[ pos + 2 ], o - f );
+		mat4 mat = lookAtMatrix( p, p2, vec3( 0., 1., 0. ) );
+		vec3 pp = position;
+		float factor = 1. + abs( 1000. * dir * speed );
+		pp.z *= factor;
+		pp.x /= factor;
+		pp.y /= factor;
+		gl_Position = projectionMatrix * modelViewMatrix * ( ( mat * vec4( pp, 1. ) ) + vec4( 2. * p, 1. ) );
+
+		opacity = 1. - offset;
+
+	}
+	</script>
+
+	<script type="x-shader/x-fragment" id="fragmentShader" charset="utf-8">
+
+	precision mediump float;
+	precision mediump int;
+
+	varying float opacity;
+
+	void main() {
+		gl_FragColor = vec4( 249. / 255., 239. / 255., 48. / 255., 1. );
+	}
+	</script>
+
+	<script>
+
+	var meshes = [];
+
+	function Point( x, y ) {
+
+		this.x = x;
+		this.y = y;
+
+	}
+
+	function Line() {
+
+		this.points = [];
+		this.points.push( new THREE.Vector3( 0, 0, 0 ) );
+		this.points.push( new THREE.Vector3( 1, 0, 0 ) );
+
+		this.tmpVector = new THREE.Vector3();
+		this.offset = new THREE.Vector3();
+
+	}
+
+	Line.prototype.refine = function() {
+
+		for( var i = 0; i < 7; i++ ) {
+			var m = Math.pow( 2, i + 1 );
+			for( var j = 0; j < m; j += 2 ) {
+				this.refinePoints( j, j + 1 );
+			}
+		}
+	}
+
+	Line.prototype.refinePoints = function( a, b ) {
+
+		var pA = this.points[ a ];
+		var pB = this.points[ b ];
+
+		this.tmpVector.copy( pB );
+		this.tmpVector.sub( pA );
+		var d = this.tmpVector.length();
+
+		this.offset.set( 0, .5 - Math.random(), .5 - Math.random() );
+		this.offset.multiplyScalar( .5 * d );
+		//this.offset.set( 0, 0, 0 );
+
+		this.tmpVector.multiplyScalar( .5 );
+		this.tmpVector.add( pA );
+		this.tmpVector.add( this.offset );
+
+		this.points.splice( a + 1, 0, this.tmpVector.clone() );
+
+	}
+
+		var renderer = new THREE.WebGLRenderer( { antialias: true } );
+		renderer.setPixelRatio( 1 );
+		renderer.devicePixelRatio = 1;
+
+		document.body.appendChild( renderer.domElement );
+
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, .001, 10 );
+		var cameraDummy = new THREE.Object3D();
+		scene.add( cameraDummy );
+		cameraDummy.add( camera );
+		var controls = new THREE.DeviceOrientationControls( camera );
+		var effect = new THREE.StereoEffect( renderer );
+		effect.eyeSeparation = .05;
+		effect.setSize( window.innerWidth, window.innerHeight );
+		
+		var intro = document.getElementById( 'intro' );
+		intro.addEventListener( 'click', function() {
+			
+			if ( renderer.domElement.mozRequestFullScreen ) {
+
+				renderer.domElement.mozRequestFullScreen();
+
+			} else if ( renderer.domElement.webkitRequestFullscreen ) {
+
+				renderer.domElement.webkitRequestFullscreen();
+
+			}
+
+			this.classList.add( 'hidden' );
+
+		});
+
+		createWorld();
+
+		var dir = .1;
+
+		function render() {
+			
+			meshes.forEach( function( mesh ) {
+				mesh.material.uniforms.dir.value = dir;
+				mesh.material.uniforms.offset.value += dir * mesh.material.uniforms.speed.value;
+				if( mesh.material.uniforms.offset.value > 1 ) mesh.material.uniforms.offset.value -= 1;
+				if( mesh.material.uniforms.offset.value < 0 ) mesh.material.uniforms.offset.value += 1;
+			});
+
+			controls.update();
+			effect.render( scene, camera );
+
+			requestAnimationFrame( render );
+
+		}
+		
+		render();
+
+		document.body.addEventListener( 'dblclick', function() {
+			effect.setFullScreen( true );
+		});
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			effect.setSize( window.innerWidth, window.innerHeight );
+
+		}
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+function createWorld() {
+
+	lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 1, transparent: true, opacity: .1, depthWrite: false, depthTest: false } );
+
+	var o = new THREE.Vector3( 0, 0, 0 );
+	var rot = new THREE.Matrix4();
+
+	var scale = new THREE.Matrix4();
+	var geo = new THREE.IcosahedronGeometry( .02, 1 );
+
+	for( var i = 0; i < 300; i++ ) {
+
+		var t = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
+		t.normalize();
+
+		o.set( 0, 0, 0 );
+
+		var up = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
+		up.normalize();
+
+		rot.lookAt( o, t, up );
+
+		o.copy( t );
+		o.multiplyScalar( 1 );
+
+		var line = new Line();
+		line.refine();
+
+		geometry = new THREE.Geometry();
+		for( var j = 0; j < line.points.length; j++ ) {
+			line.points[ j ].multiplyScalar( 5 );
+			geometry.vertices.push( line.points[ j ].clone() );
+			geometry.vertices[ j ].add( o );
+		}
+		geometry.verticesNeedUpdate= true;
+		geometry.applyMatrix( rot );
+
+		var material = new THREE.RawShaderMaterial( {
+			uniforms: {
+				path: { type: 'v3v', value: geometry.vertices },
+				offset: { type: 'f', value: Math.random() },
+				dir: { type: 'f', value: 0 },
+				speed: { type: 'f', value: 2 * ( .001 + .002 * Math.random() ) },
+				phase: { type: 'f', value: Math.random() }
+			},
+			vertexShader: document.getElementById( 'vertexShader' ).textContent,
+			fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+			transparent: true,
+			depthTest: false
+		} );
+
+		mesh = new THREE.Mesh(
+			geo,
+			material 
+		);
+		scene.add( mesh );
+		meshes.push( mesh );
+		mesh.frustumCulled = false
+
+	}
+
+}
+
+	</script>
+}
+</html>
