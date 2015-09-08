@@ -13,10 +13,36 @@
 				background-color: #222;
 				margin: 0px;
 				overflow: hidden;
+				font-family: roboto, sans-serif;
+				text-shadow: 0 0 1px black;
 			}
 			a{ color: white; text-shadow: 0 1px 0 rgba( 0,0,0,.5 ) }
 			#container canvas{ position: absolute; left: 0; top: 0; width: 100%; height: 100%; bottom: 0;}
+			#intro{
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 10;
+				background-color: rgba( 0,0,0,.6 );
+				display: -webkit-flex;
+				-webkit-align-items: center;
+				-webkit-justify-content: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				transition: opacity 150ms ease-out;
+			}
+			.hidden{
+				pointer-events: none;
+				opacity: 0;
+			}
 		</style>
+
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
 		<script src="js/three.min.js" ></script>
 		<script src="js/OrbitControls.js" ></script>
 		<script src="js/matter-0.8.0.min.js" ></script>
@@ -26,6 +52,19 @@
 
 	</head>
 	<body>
+
+		<div id="intro" >
+			<div>
+				<p>Welcome!</p>
+				<h1>WebVR with Gamepad API</h1>
+				<p>You'll need to have your HMD connected</p>
+				<p>Double click to start VR mode</p>
+				<p>Scroll to rotate the board</p>
+				<p>Click to start</p>
+			</div>
+		</div>
+
+	</body>
 
 <script>
 
@@ -236,6 +275,14 @@ function init() {
 		e.preventDefault();
 
 	};
+
+	var intro = document.getElementById( 'intro' );
+	intro.addEventListener( 'click', function() {
+
+		this.classList.add( 'hidden' );
+
+	});
+
 
 }
 
