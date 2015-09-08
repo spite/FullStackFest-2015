@@ -109,6 +109,10 @@
 
 	<script>
 
+	if( 'ontouchstart' in window ) {
+		window.location = 'index-cardboard.html';
+	}
+
 	var meshes = [];
 
 	function Point( x, y ) {
